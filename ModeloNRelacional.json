@@ -1,0 +1,655 @@
+
+
+bd2.create_collection("cliente", validator= {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "title": "Validacao de esquema",
+        "required": ["nome", "cpf", "email", "endereco", "avaliacao"],
+        "properties": {
+            "nome": {
+                "bsonType": "string",
+                "description": "Nome do cliente - Campo obrigatório!"
+            },
+            "cpf": {
+                "bsonType": "string",
+                "description": "CPF do cliente - Campo obrigatório!"
+            },
+            "email": {
+                "bsonType": "string",
+                "description": "Email do cliente - Campo obrigatório!"
+            },
+            "endereco": {
+                "bsonType": "array",
+                "required": ["numero", "cep"],
+                "properties": {
+                    "numero": {
+                        "bsonType": "int",
+                        "description": "Numero residencia"
+                    },
+                    "complemento": {
+                        "bsonType": "string",
+                        "description": "Complemento do endereço"
+                    },
+                    "cep": {
+                        "bsonType": "string",
+                        "description": "CEP do cliente"
+                    },
+                    "idEndereco":{
+                        "bsonType": "int",
+                        "description": "Id do endereço"
+                    }
+
+                }
+            },
+            "avaliacao": {
+                "bsonType": "array",
+                "required": ["nota", "data", "idProduto"],
+                "properties": {
+                    "nota": {
+                        "bsonType": "double",
+                        "description": "Nota do produto - Campo obrigatório!"
+                    },
+                    "comentario": {
+                        "bsonType": "string",
+                        "description": "Comentário sobre o produto"
+                    },
+                    "data": {
+                        "bsonType": "date",
+                        "description": "Data da avaliação"
+                    },
+                    "idFKProduto": {
+                        "bsonType": "objectId",
+                        "description": "Id do produto em que a avaliação foi feita"
+                    }
+                }
+            }
+        }
+    }
+})bd2.create_collection("pedido", validator= {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "title": "Validacao de esquema",
+        "required": ["formaDePagamento", "data", "item", "idFKEndereco"],
+        "properties": {
+            "formaDePagamento": {
+                "bsonType": "string",
+                "description": "Forma do pagamento - Campo obrigatório!"
+            },
+            "dataehora":{
+                "bsonType": "date",
+                "description": "data do pedido"
+            },
+            "idFKEndereco": {
+                "bsonType": "int",
+                "description": "Id do endereço de quem fez o pedido"
+            },
+            "item": {
+                "bsonType": "array",
+                "required": ["quantidade", "data de entrega", "status"],
+                "properties": {
+                    "quantidade": {
+                        "bsonType": "int",
+                        "description": "Quantidade de itens - Campo obrigatório!"
+                    },
+                    "data de entrega": {
+                        "bsonType": "date",
+                        "description": "Data de entrega"
+                    },
+                    "status": {
+                        "bsonType": "string",
+                        "description": "Status do pedido"
+                    },
+                    "idFKProduto": {
+                        "bsonType": "objectId",
+                        "description": "id do produto do pedido"
+                    },
+                    "idFKTrans": {
+                        "bsonType": "int",
+                        "description": "is da transportadora"
+                    }
+                }
+            }
+        }
+
+    }
+})bd2.create_collection("produto", validator= {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "title": "Validacao de esquema",
+        "required": ["nome", "preco"],
+        "properties": {
+            "nome": {
+                "bsonType": "string",
+                "description": "Nome do produto - Campo obrigatório!"
+            },
+            "preco": {
+                "bsonType": "double",
+                "description": "Preço do produto"
+            },
+            "idFKCategoria": {
+                "bsonType": "objectId",
+                "description": "id da categoria do produto"
+            }
+        }
+    }
+})bd2.create_collection("transportadora", validator= {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "title": "Validacao de esquema",
+        "required": ["nome", "email"],
+        "properties": {
+            "nome": {
+                "bsonType": "string",
+                "description": "Nome da transportadora - Campo obrigatório!"
+            },
+            "email": {
+                "bsonType": "string",
+                "description": "Email da transportadora - Campo obrigatório!"
+            }
+        }
+    }
+})bd2.create_collection("categoria", validator= {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "title": "Validacao de esquema",
+        "required": ["nome"],
+        "properties": {
+            "nome": {
+                "bsonType": "string",
+                "description": "Nome da categoria - Campo obrigatório!"
+            }
+        }
+    }
+})dadosCliente = [
+    {
+        "nome": "Enner Valência",
+        "cpf": "612758879-60",
+        "email": "ennerzinhocolorado@gmail.com",
+        "endereco": [{
+            "numero": 123,
+            "complemento": None,
+            "cep": "01000-000",
+            "idEndereco": 1
+        },
+        {
+            "numero": 101,
+            "complemento": None,
+            "cep": "01310-000",
+            "idEndereco": 11
+        }],
+        "avaliacao": [
+            {
+            "nota": 10.0,
+            "comentario": "Bom, rápido e bonito!",
+            "data": datetime(2024, 5, 10),
+            "idFKProduto": idprodutos[0]
+            },
+          ]
+        },
+    {
+        "nome": "Bruna Benites",
+        "cpf": "743600912-10",
+        "email": "bruna_b@outlook.com.br",
+        "endereco": [{
+            "numero": 1010,
+            "complemento": None,
+            "cep": "90020-007",
+            "idEndereco": 2
+        },
+        {
+            "numero": 202,
+            "complemento": None,
+            "cep": "01310-000",
+            "idEndereco": 21
+        }],
+        "avaliacao": [
+            {
+            "nota": 9.5,
+            "comentario":"Ótima geladeira, muito espaçosa!",
+            "data": datetime(2024, 5, 10),
+            "idFKProduto": idprodutos[1]
+            },
+          ]
+        },
+    {
+       "nome": "Roberta Schroeder",
+        "cpf": "510679839-11",
+        "email": "robertacolorado@gmail.com",
+        "endereco": [{
+            "numero": 909,
+            "complemento": "Bloco B",
+            "cep": "74030-010",
+            "idEndereco": 3
+        }],
+        "avaliacao": [
+            {
+            "nota": 9.8,
+            "comentario":"Excelente celular, rápido e eficiente.",
+            "data": datetime(2024, 5, 12),
+            "idFKProduto": idprodutos[2]
+            },
+          ]
+        },
+      {
+      "nome": "Isa Haas",
+      "cpf": "047596304-41",
+      "email": "isahaas@outlook.com.br",
+      "endereco": [
+        {
+          "numero": 808,
+          "complemento": "Ap.12",
+          "cep": "22240-000",
+            "idEndereco": 4
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 0.0,
+          "comentario": "UM LIXO! NAO LIMPA NADA",
+          "data": datetime(2024, 5, 11),
+          "idFKProduto": idprodutos[3]
+        }
+      ]
+    },
+    {
+      "nome": "Soll Oliveira",
+      "cpf": "892376415-02",
+      "email": "sollzinhacolorado@gmail.com",
+      "endereco": [
+        {
+          "numero": 707,
+          "complemento": None,
+          "cep": "90010-150",
+            "idEndereco": 5
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 2.5,
+          "comentario": "Refrigerante QUENTE e sem gaz.",
+          "data": datetime(2024, 5, 15),
+          "idFKProduto": idprodutos[4]
+        }
+      ]
+    },
+    {
+      "nome": "Giulia Giovanna",
+      "cpf": "375624418-05",
+      "email": "ggiovanna@outlook.com.br",
+      "endereco": [
+        {
+          "numero": 606,
+          "complemento": None,
+          "cep": "01040-000",
+            "idEndereco": 6
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 9.2,
+          "comentario": "Suco de laranja natural, muito bom.",
+          "data": datetime(2024, 5, 13),
+          "idFKProduto": idprodutos[5]
+        }
+      ]
+    },
+    {
+      "nome": "Alan Patrick",
+      "cpf": "406935288-11",
+      "email": "apatrick@outlook.com.br",
+      "endereco": [
+        {
+          "numero": 505,
+          "complemento": None,
+          "cep": "01304-000",
+            "idEndereco": 7
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 8.8,
+          "comentario": "Água mineral refrescante e pura.",
+          "data": datetime(2024, 5, 13),
+          "idFKProduto": idprodutos[6]
+        }
+      ]
+    },
+    {
+      "nome": "Rafael Borré",
+      "cpf": "521849376-47",
+      "email": "borre.rcolorado@gmail.com",
+      "endereco": [
+        {
+          "numero": 404,
+          "complemento": None,
+          "cep": "22010-000",
+            "idEndereco": 8
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 6.0,
+          "comentario": "Bonita, quentinha mas fede a latex barato.",
+          "data": datetime(2024, 5, 11),
+          "idFKProduto": idprodutos[7]
+        }
+      ]
+    },
+    {
+      "nome": "Mauricío Prado",
+      "cpf": "137296054-33",
+      "email": "mauricio_p@outlook.com.br",
+      "endereco": [
+        {
+          "numero": 456,
+          "complemento": None,
+          "cep": "20000-000",
+            "idEndereco": 9
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 9.6,
+          "comentario": "Bolsa de marca elegante e prática.",
+          "data": datetime(2024, 5, 12),
+          "idFKProduto": idprodutos[8]
+        }
+      ]
+    },
+    {
+      "nome": "Sergio Rochet",
+      "cpf": "213487652-00",
+      "email": "rochetcolorado@gmail.com",
+      "endereco": [
+        {
+          "numero": 789,
+          "complemento": None,
+          "cep": "22000-000",
+            "idEndereco": 10
+        }
+      ],
+      "avaliacao": [
+        {
+          "nota": 0.0,
+          "comentario": "Óculos ótimo.",
+          "data": datetime(2024, 5, 13),
+          "idFKProduto": idprodutos[9]
+        }
+      ]
+    }
+]
+dadosPedido = [
+  {
+    "formaDePagamento": "Pix",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 1,
+    "item": [
+      {
+        "quantidade": 1,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[0],
+        "idFKTrans": idtransportadoras[0]
+      },
+      {
+        "quantidade": 2,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[2],
+        "idFKTrans": idtransportadoras[1]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Cartão de Crédito",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 2,
+    "item": [
+      {
+        "quantidade": 2,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[1],
+        "idFKTrans": idtransportadoras[1]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Boleto",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 3,
+    "item": [
+      {
+        "quantidade": 1,
+        "status": "A caminho",
+        "idFKProduto": idprodutos[6],
+        "idFKTrans": idtransportadoras[0]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Pix",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 4,
+    "item": [
+      {
+        "quantidade": 1,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[6],
+        "idFKTrans": idtransportadoras[0]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Cartão de Débito",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 5,
+    "item": [
+      {
+        "quantidade": 1,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[9],
+        "idFKTrans": idtransportadoras[1]
+      },
+      {
+        "quantidade": 2,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[4],
+        "idFKTrans": idtransportadoras[1]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Pix",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 6,
+    "item": [
+      {
+        "quantidade": 3,
+        "status": "A caminho",
+        "idFKProduto": idprodutos[8],
+        "idFKTrans": idtransportadoras[0]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Cartão de Débito",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 7,
+    "item": [
+      {
+        "quantidade": 1,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[2],
+        "idFKTrans": idtransportadoras[0]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Cartão de Crédito",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 8,
+    "item": [
+      {
+        "quantidade": 1,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[7],
+        "idFKTrans": idtransportadoras[0]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Pix",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 9,
+    "item": [
+      {
+        "quantidade": 2,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[9],
+        "idFKTrans": idtransportadoras[1]
+      },
+      {
+        "quantidade": 2,
+        "data de entrega": datetime(2024, 5, 10),
+        "status": "Entregue",
+        "idFKProduto": idprodutos[7],
+        "idFKTrans": idtransportadoras[1]
+      }
+    ]
+  },
+  {
+    "formaDePagamento": "Pix",
+    "data": datetime(2024, 5, 10),
+    "idFKEndereco": 10,
+    "item": [
+      {
+        "quantidade": 1,
+        "status": "Preparando",
+        "idFKProduto": idprodutos[0],
+        "idFKTrans": idtransportadoras[1]
+      }
+    ]
+  }
+]
+dadosProduto = [
+  {
+    "nome": "Notebook",
+    "preco": 3700.0,
+    "idFKCategoria": idcategorias[0]
+  },
+  {
+    "nome": "Geladeira",
+    "preco": 2000.0,
+    "idFKCategoria":  idcategorias[0]
+  },
+  {
+    "nome": "Celular",
+    "preco": 1500.0,
+    "idFKCategoria": idcategorias[0]
+  },
+  {
+    "nome": "Robo Aspirador",
+    "preco": 800.0,
+    "idFKCategoria": idcategorias[0]
+  },
+  {
+    "nome": "Refrigerante",
+    "preco": 5.50,
+    "idFKCategoria": idcategorias[1]
+  },
+  {
+    "nome": "Suco de Laranja",
+    "preco": 6.00,
+    "idFKCategoria": idcategorias[1]
+  },
+  {
+    "nome": "Biscoito",
+    "preco": 3.00,
+    "idFKCategoria": idcategorias[1]
+  },
+  {
+    "nome": "Água Mineral",
+    "preco": 2.00,
+    "idFKCategoria": idcategorias[1]
+  },
+  {
+    "nome": "Jaqueta de Couro",
+    "preco": 200.0,
+    "idFKCategoria": idcategorias[2]
+  },
+  {
+    "nome": "Bolsa de Marca",
+    "preco": 300.0,
+    "idFKCategoria": idcategorias[2]
+  },
+  {
+    "nome": "Sapato Social",
+    "preco": 150.0,
+    "idFKCategoria":  idcategorias[2]
+  },
+  {
+    "nome": "Óculos de Sol",
+    "preco": 100.0,
+    "idFKCategoria":  idcategorias[2]
+  }
+]
+dadosTrans = [
+  {
+    "nome": "TransLogística Express",
+    "email": "contato@translogisticaexpress.com"
+  },
+  {
+    "nome": "Rápido Transportes",
+    "email": "atendimento@rapidotransportes.com"
+  }
+]
+dadosCategoria = [
+    {
+        "nome": "Eletrônicos"
+    },
+    {
+        "nome": "Alimentos"
+    },
+    {
+        "nome": "Roupas e Acessórios"
+    }
+]
+try:
+    idclientes = bd2.cliente.insert_many(dadosCliente).inserted_ids
+    print(idclientes)
+except Exception as e:
+    print(f"Erro completo: {e}")
+    print(f"Tipo de erro: " + type(e).__name)
+    print(f"Código: {e.details.get('code')}")
+    print(f"Mensagem: {e.details.get('errmsg')}")
+try:
+    idprodutos = bd2.produto.insert_many(dadosProduto).inserted_ids
+    print(idprodutos)
+except Exception as e:
+    print(f"Erro completo: {e}")
+    print(f"Tipo de erro: " + type(e).__name)
+    print(f"Código: {e.details.get('code')}")
+    print(f"Mensagem: {e.details.get('errmsg')}")
+try:
+    idtransportadoras = bd2.transportadora.insert_many(dadosTrans).inserted_ids
+    print(idtransportadoras)
+except Exception as e:
+    print(f"Erro completo: {e}")
+    print(f"Tipo de erro: " + type(e).__name)
+    print(f"Código: {e.details.get('code')}")
+    print(f"Mensagem: {e.details.get('errmsg')}")
+try:
+    idcategorias = bd2.categoria.insert_many(dadosCategoria).inserted_ids
+    print(idcategorias)
+except Exception as e:
+    print(f"Erro completo: {e}")
+    print(f"Tipo de erro: " + type(e).__name)
+    print(f"Código: {e.details.get('code')}")
+    print(f"Mensagem: {e.details.get('errmsg')}")
